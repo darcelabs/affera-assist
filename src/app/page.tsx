@@ -1,118 +1,61 @@
+"use client";
+
+import { useState } from "react";
+import { issues } from "@/data/issues";
+
 export default function Home() {
-  const issues = [
-    {
-      code: "0048",
-      title: "Temperature Sensor Fault",
-      trust: "Official Guidance",
-    },
-    {
-      code: "0061",
-      title: "Temperature Spread Too High",
-      trust: "Official Guidance",
-    },
-    {
-      code: "0052",
-      title: "Pump Communication Failure",
-      trust: "Official Guidance",
-    },
-    {
-      code: "0032",
-      title: "High Frequency Leakage",
-      trust: "Official Guidance",
-    },
-    {
-      code: "1207",
-      title: "Location Reference Moved",
-      trust: "Official Guidance",
-    },
-    {
-      code: "N/A",
-      title: "Magnetic Interference",
-      trust: "Official Guidance",
-    },
-    {
-      code: "N/A",
-      title: "Loss of Communication",
-      trust: "Official Guidance",
-    },
-    {
-      code: "Field",
-      title: "Ground Patches Not Turning Green",
-      trust: "Field Validated",
-    },
-    {
-      code: "Field",
-      title: "Template Corruption",
-      trust: "Emerging Pattern",
-    },
-  ];
+  const [search, setSearch] = useState("");
+
+  const filtered = issues.filter(
+    (issue) =>
+      issue.title.toLowerCase().includes(search.toLowerCase()) ||
+      issue.id.toLowerCase().includes(search.toLowerCase()) ||
+      issue.summary.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <main className="min-h-screen bg-slate-100 p-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-4xl font-bold text-slate-900">
+        <h1 className="text-4xl font-bold">
           Affera Assist
         </h1>
 
-        <p className="mt-2 text-slate-600">
-          Internal troubleshooting and knowledge platform
+        <p className="mb-6 mt-2 text-slate-600">
+          Internal Troubleshooting Knowledge Platform
         </p>
 
-        <div className="mt-8 rounded-xl bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">
-            Describe Your Issue
-          </h2>
+        <input
+          className="w-full rounded-lg border p-3"
+          placeholder="Search issue, symptom, or error code..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-          <textarea
-            className="w-full rounded-lg border p-3"
-            rows={5}
-            placeholder="Example: Generator offline after startup. Rebooted CIU already. Running Prism 2.4."
-          />
+        <div className="mt-6 space-y-3">
+          {filtered.map((issue) => (
+            <div
+              key={issue.id}
+              className="rounded-lg border bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold">
+                  {issue.id} - {issue.title}
+                </h2>
 
-          <div className="mt-4 flex gap-4">
-            <select className="rounded-lg border p-2">
-              <option>Prism 2.4</option>
-              <option>Prism 2.3</option>
-              <option>Prism 1</option>
-            </select>
-
-            <button className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white">
-              Ask Affera Assist
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-8 rounded-xl bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">
-            Seeded Knowledge Base
-          </h2>
-
-          <div className="space-y-3">
-            {issues.map((issue) => (
-              <div
-                key={issue.title}
-                className="flex items-center justify-between rounded-lg border p-3"
-              >
-                <div>
-                  <div className="font-semibold">
-                    {issue.code} {issue.title}
-                  </div>
-                </div>
-
-                <div
-                  className={`rounded-full px-3 py-1 text-sm ${
-                    issue.trust === "Official Guidance"
-                      ? "bg-green-100 text-green-800"
-                      : issue.trust === "Field Validated"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-yellow-100 text-yellow-800"
-                  }`}
-                >
+                <span className="rounded-full bg-green-100 px-3 py-1 text-sm">
                   {issue.trust}
-                </div>
+                </span>
               </div>
-            ))}
-          </div>
+
+              <div className="mt-2 text-sm text-slate-600">
+                {issue.category}
+              </div>
+
+              <p className="mt-2">
+                {issue.summary}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </main>
